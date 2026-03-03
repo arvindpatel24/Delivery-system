@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: samagri
+      POSTGRES_PASSWORD: samagri
+      POSTGRES_DB: samagri_delivery
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U samagri -d samagri_delivery"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: postgres://samagri:samagri@postgres:5432/samagri_delivery
+      JWT_SECRET: docker-compose-dev-secret
+      AUTH_MODE: mock
+      RUST_LOG: info,delivery_api=debug
+      HOST: 0.0.0.0
+      PORT: 8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:

@@ -1,0 +1,31 @@
+[package]
+name = "delivery-api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+delivery-domain = { path = "../domain" }
+delivery-application = { path = "../application" }
+delivery-infrastructure = { path = "../infrastructure" }
+uuid = { workspace = true }
+chrono = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+axum = { workspace = true }
+tower = { workspace = true }
+tower-http = { workspace = true }
+sqlx = { workspace = true }
+reqwest = { workspace = true }
+jsonwebtoken = { workspace = true }
+dotenvy = { workspace = true }
+governor = { workspace = true }
+rand = { workspace = true }
+argon2 = { workspace = true }
+async-trait = { workspace = true }
+utoipa = { workspace = true }
+utoipa-swagger-ui = { workspace = true }

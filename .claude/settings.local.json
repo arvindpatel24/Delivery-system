@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rustup update:*)",
+      "Bash(cargo check:*)",
+      "Bash(cargo fix:*)",
+      "Bash(git init:*)",
+      "Bash(cargo build:*)",
+      "Bash(cargo search:*)"
+    ]
+  }
+}
