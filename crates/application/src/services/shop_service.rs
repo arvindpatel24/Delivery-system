@@ -33,7 +33,7 @@ impl ShopService {
 
         let now = Utc::now();
         let shop = Shop {
-            id: Uuid::new_v4(),
+            id: Uuid::now_v7(),
             name: req.name.clone(),
             phone: req.phone,
             api_key_hash,

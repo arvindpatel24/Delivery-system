@@ -5,16 +5,14 @@ use uuid::Uuid;
 
 use delivery_domain::entities::order::{Order, OrderStatus, RoutingMode, INSTANT_DISTANCE_THRESHOLD_METERS};
 use delivery_domain::errors::{DomainError, DomainResult};
-use delivery_domain::ports::{GeospatialEngine, Geocoder, OrderRepository, ShopRepository};
+use delivery_domain::ports::{GeospatialEngine, OrderRepository};
 use delivery_domain::value_objects::Location;
 
 use crate::dto::{CreateOrderRequest, CreateOrderResponse, OrderResponse};
 
 pub struct OrderService {
     pub order_repo: Arc<dyn OrderRepository>,
-    pub shop_repo: Arc<dyn ShopRepository>,
     pub geospatial: Arc<dyn GeospatialEngine>,
-    pub geocoder: Arc<dyn Geocoder>,
 }
 
 impl OrderService {
@@ -23,24 +21,8 @@ impl OrderService {
         shop_id: Uuid,
         req: CreateOrderRequest,
     ) -> DomainResult<CreateOrderResponse> {
-        let shop = self
-            .shop_repo
-            .find_by_id(shop_id)
-            .await?
-            .ok_or(DomainError::NotFound {
-                entity: "Shop",
-                id: shop_id,
-            })?;
-
-        let pickup_location = match (req.pickup_latitude, req.pickup_longitude) {
-            (Some(lat), Some(lng)) => Location::new(lat, lng)?,
-            _ => shop.location,
-        };
-
-        let dropoff_location = match (req.dropoff_latitude, req.dropoff_longitude) {
-            (Some(lat), Some(lng)) => Location::new(lat, lng)?,
-            _ => self.geocoder.geocode(&req.dropoff_address).await?,
-        };
+        let pickup_location = Location::new(req.pickup_latitude, req.pickup_longitude)?;
+        let dropoff_location = Location::new(req.dropoff_latitude, req.dropoff_longitude)?;
 
         let distance = self
             .geospatial
@@ -55,7 +37,7 @@ impl OrderService {
 
         let now = Utc::now();
         let order = Order {
-            id: Uuid::new_v4(),
+            id: Uuid::now_v7(),
             shop_id,
             driver_id: None,
             status: OrderStatus::Pending,

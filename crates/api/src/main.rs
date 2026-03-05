@@ -103,9 +103,7 @@ async fn main() -> anyhow::Result<()> {
 
     let order_service = Arc::new(OrderService {
         order_repo: order_repo.clone(),
-        shop_repo: shop_repo.clone(),
         geospatial: geospatial.clone(),
-        geocoder: geocoder.clone(),
     });
 
     let dispatch_service = Arc::new(DispatchService {

@@ -102,7 +102,7 @@ impl DispatchOfferRepository for PgDispatchOfferRepo {
             UPDATE driver_dispatch_offers
             SET status = 'expired'::offer_status, responded_at = NOW()
             WHERE status = 'pending' AND expires_at < $1
-            RETURNING DISTINCT order_id
+            RETURNING order_id
             "#,
         )
         .bind(before)
@@ -110,6 +110,16 @@ impl DispatchOfferRepository for PgDispatchOfferRepo {
         .await
         .map_err(|e| DomainError::Infrastructure(e.to_string()))?;
 
-        Ok(rows.into_iter().map(|r| r.0).collect())
+        // RETURNING doesn't support DISTINCT in PostgreSQL, so deduplicate here.
+        // An order can have multiple expired offers (one per driver), but we only
+        // want to re-dispatch each order once.
+        let mut seen = std::collections::HashSet::new();
+        let unique: Vec<Uuid> = rows
+            .into_iter()
+            .map(|r| r.0)
+            .filter(|id| seen.insert(*id))
+            .collect();
+
+        Ok(unique)
     }
 }

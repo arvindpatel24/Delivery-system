@@ -50,7 +50,7 @@ impl DispatchService {
 
         for driver in &nearby {
             let offer = DispatchOffer {
-                id: Uuid::new_v4(),
+                id: Uuid::now_v7(),
                 order_id,
                 driver_id: driver.driver_id,
                 status: OfferStatus::Pending,
@@ -172,7 +172,7 @@ impl DispatchService {
                     let expires_at = Utc::now() + Duration::seconds(self.dispatch_timeout_secs);
                     for driver in &nearby {
                         let offer = DispatchOffer {
-                            id: Uuid::new_v4(),
+                            id: Uuid::now_v7(),
                             order_id: *order_id,
                             driver_id: driver.driver_id,
                             status: OfferStatus::Pending,

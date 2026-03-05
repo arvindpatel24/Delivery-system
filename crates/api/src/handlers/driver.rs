@@ -27,20 +27,14 @@ pub async fn register_driver(
 ) -> Result<impl axum::response::IntoResponse, ApiError> {
     let password_hash = hash_password(&req.password)?;
 
-    let temp_req = RegisterDriverRequest {
-        name: req.name.clone(),
-        phone: req.phone.clone(),
-        password: req.password.clone(),
-        vehicle_type: req.vehicle_type.clone(),
-    };
-
-    let driver_id = uuid::Uuid::new_v4();
+    let driver_id = uuid::Uuid::now_v7();
     let token = state
         .jwt_manager
         .generate_token(driver_id, "driver")
         .map_err(|e| ApiError(DomainError::Infrastructure(e)))?;
 
-    let resp = state.driver_service.register(temp_req, password_hash, token).await?;
+    // driver_id is passed so the DB record and the JWT contain the same UUID
+    let resp = state.driver_service.register(driver_id, req, password_hash, token).await?;
     Ok(ApiResponse::created(resp))
 }
 

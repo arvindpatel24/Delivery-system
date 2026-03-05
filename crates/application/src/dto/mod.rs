@@ -60,10 +60,10 @@ pub struct CreateOrderRequest {
     pub customer_name: Option<String>,
     pub customer_phone: Option<String>,
     pub package_description: Option<String>,
-    pub pickup_latitude: Option<f64>,
-    pub pickup_longitude: Option<f64>,
-    pub dropoff_latitude: Option<f64>,
-    pub dropoff_longitude: Option<f64>,
+    pub pickup_latitude: f64,
+    pub pickup_longitude: f64,
+    pub dropoff_latitude: f64,
+    pub dropoff_longitude: f64,
 }
 
 #[derive(Debug, Serialize)]

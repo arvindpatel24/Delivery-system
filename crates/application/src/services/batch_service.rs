@@ -35,7 +35,7 @@ impl BatchService {
 
         let now = Utc::now();
         let run = BatchRun {
-            id: Uuid::new_v4(),
+            id: Uuid::now_v7(),
             scheduled_hour,
             total_orders: pending.len() as i32,
             total_clusters: 0,
@@ -65,7 +65,7 @@ impl BatchService {
                 total_clusters += 1;
 
                 let batch_cluster = BatchCluster {
-                    id: Uuid::new_v4(),
+                    id: Uuid::now_v7(),
                     batch_run_id: run.id,
                     cluster_label: cluster.label,
                     driver_id: None,

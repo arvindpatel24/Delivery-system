@@ -23,7 +23,7 @@ impl WebhookService {
         payload: serde_json::Value,
     ) -> DomainResult<()> {
         let entry = WebhookOutbox {
-            id: Uuid::new_v4(),
+            id: Uuid::now_v7(),
             order_id,
             shop_id,
             webhook_url,

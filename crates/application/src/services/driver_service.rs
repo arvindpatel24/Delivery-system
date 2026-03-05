@@ -16,6 +16,7 @@ pub struct DriverService {
 impl DriverService {
     pub async fn register(
         &self,
+        id: Uuid,
         req: RegisterDriverRequest,
         password_hash: String,
         token: String,
@@ -29,7 +30,7 @@ impl DriverService {
 
         let now = Utc::now();
         let driver = Driver {
-            id: Uuid::new_v4(),
+            id,
             name: req.name.clone(),
             phone: req.phone,
             password_hash,
